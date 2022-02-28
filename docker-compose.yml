@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  database:
+    image: mongo
+    container_name: database_beauty
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: prisma
+      MONGO_INITDB_DATABASE: beautystudio
+    volumes:
+      - mongodata:/data/mongo
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: prisma
+      ME_CONFIG_MONGODB_URL: mongodb://root:prisma@mongo:27018/
+  mongo:
+    build: .
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: prisma
+      MONGO_REPLICA_HOST: localhost
+      MONGO_REPLICA_PORT: 27018
+    ports:
+      - '27018:27018'
+    
+  app:
+    build: .
+    container_name: beautyApi
+    ports:
+      - 3333:3333
+    volumes:
+      - .:/usr/app
+    links:
+      - database
+    depends_on: 
+      - database
+
+volumes:
+  mongodata:
+    driver: local
