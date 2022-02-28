@@ -12,6 +12,7 @@ interface IAddress {
 interface ICreateUser {
   name: string;
   password: string;
+  password_confirmed?: string;
   email: string;
   phone: Decimal;
   Address: IAddress[];

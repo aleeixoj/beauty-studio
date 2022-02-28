@@ -1,7 +1,7 @@
 import { prisma } from 'database/prismaClient';
 
-import { ICreateUser } from '@modules/user/dtos/IUser';
-import { IUsersRepository } from '@modules/user/repositories/IUsersRepository';
+import { ICreateUser } from '@modules/accounts/dtos/IUser';
+import { IUsersRepository } from '@modules/accounts/repositories/IUsersRepository';
 import { User } from '@prisma/client';
 
 class UsersRepository implements IUsersRepository {
@@ -18,6 +18,10 @@ class UsersRepository implements IUsersRepository {
     });
 
     return createdUser;
+  }
+  async findById(id: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({ where: { id } });
+    return user;
   }
   async findAll(): Promise<User[]> {
     const users = await prisma.user.findMany({ include: { Address: true } });

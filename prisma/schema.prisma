@@ -12,17 +12,20 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
   name       String
-  email      String
+  email      String       @unique
   phone      Decimal
   password   String
   avatar     String?
-  status     String    @default("1")
-  profile    String    @default("1")
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  status     String       @default("1")
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+  isAdmin    Boolean      @default(false)
+  profile    Profile?     @relation(fields: [profileId], references: [id])
   Address    Address[]
+  UserToken  UserTokens[]
+  profileId  String?      @db.ObjectId
 }
 
 model Address {
@@ -35,4 +38,30 @@ model Address {
   state      String
   User       User?   @relation(fields: [userId], references: [id])
   userId     String? @db.ObjectId
+}
+
+model Resources {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  key       String
+  value     String
+  Profile   Profile? @relation(fields: [profileId], references: [id])
+  profileId String?  @db.ObjectId
+}
+
+model Profile {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  created_at DateTime    @default(now())
+  updated_at DateTime    @updatedAt
+  resources  Resources[]
+  User       User[]
+}
+
+model UserTokens {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  refresh_token String
+  user          User?    @relation(fields: [user_id], references: [id])
+  expires_date  DateTime
+  created_at    DateTime @default(now())
+  user_id       String?  @db.ObjectId
 }
