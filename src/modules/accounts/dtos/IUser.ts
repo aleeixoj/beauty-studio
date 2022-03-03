@@ -16,6 +16,7 @@ interface ICreateUser {
   email: string;
   phone: Decimal;
   Address: IAddress[];
+  profileId?: string;
 }
 
 export { IAddress, ICreateUser };

@@ -41,20 +41,26 @@ model Address {
 }
 
 model Resources {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  key       String
-  value     String
-  Profile   Profile? @relation(fields: [profileId], references: [id])
-  profileId String?  @db.ObjectId
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  key        String
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+
+  Profile    Profile[] @relation(fields: [profileIds], references: [id])
+  profileIds String[]  @db.ObjectId
 }
 
 model Profile {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  created_at DateTime    @default(now())
-  updated_at DateTime    @updatedAt
-  resources  Resources[]
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  name       String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   User       User[]
+
+  resources   Resources[] @relation(fields: [resourceIds], references: [id])
+  resourceIds String[]    @db.ObjectId
 }
 
 model UserTokens {
@@ -64,4 +70,8 @@ model UserTokens {
   expires_date  DateTime
   created_at    DateTime @default(now())
   user_id       String?  @db.ObjectId
+}
+
+enum defaultProfile {
+  profileId
 }

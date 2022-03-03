@@ -1,6 +1,7 @@
 import { hash } from 'bcrypt';
 import { inject, injectable } from 'tsyringe';
 
+import { IProfileRepository } from '@modules/accounts/repositories/IProfileRepository';
 import { IUsersRepository } from '@modules/accounts/repositories/IUsersRepository';
 import { User } from '@prisma/client';
 import { AppError } from '@shared/errors/AppError';
@@ -11,7 +12,9 @@ import { ICreateUser } from '../../dtos/IUser';
 class CreateUserUseCase {
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUsersRepository
+    private usersRepository: IUsersRepository,
+    @inject('ProfileRepository')
+    private profileRepository: IProfileRepository
   ) {}
   async execute({
     name,
@@ -30,6 +33,8 @@ class CreateUserUseCase {
       throw new AppError('User Already exists', 500);
     }
 
+    const profile = await this.profileRepository.findByName('basic_user');
+
     const hashPassword = await hash(password, 10);
 
     const createUser = await this.usersRepository.create({
@@ -38,6 +43,7 @@ class CreateUserUseCase {
       password: hashPassword,
       phone,
       Address,
+      profileId: profile?.id,
     });
 
     return createUser;

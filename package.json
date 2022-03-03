@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "aleeixoj <aleeixojunior2016@hotmail.com>",
   "license": "MIT",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "dev": "ts-node-dev --exit-child -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules --respawn src/shared/infra/http/server.ts"
   },

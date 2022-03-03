@@ -2,7 +2,9 @@ FROM node
 
 WORKDIR /usr/app
 
-COPY package.json ./
+COPY package*.json ./
+
+COPY prisma ./prisma/
 
 RUN npm install -g yarn --force
 
